@@ -36,24 +36,27 @@ adv_vehicles.rotate_point_around_other_point = function (circle_centre_pos, rota
 end
 
 -- The method attaches a player to the car
-adv_vehicles.attach_player_to_car = function(player, car, seated, model, animation)
-    if car.seats_list[seated].busy_by then
-	    minetest.chat_send_player(player:get_player_name(), "This seat is busy by" .. car.seats_list[seat_num].busy_by .. "!")
+adv_vehicles.attach_player_to_veh = function(player, vehicle, seated, model, animation)
+    if vehicle.seats_list[seated].busy_by then
+	    minetest.chat_send_player(player:get_player_name(), "This seat is busy by" .. vehicle.seats_list[seat_num].busy_by .. "!")
 	    return 
     end
     
-    car.seats_list[seated].busy_by = player:get_player_name()
-    local car_rot = car.object:get_rotation()
-    local fixed_car_yaw = car.fixed_car_rotate_angle
-    local new_seat_pos = adv_vehicles.rotate_point_around_other_point({x=0, y=0, z=0}, car.seats_list[seated].pos, fixed_car_yaw, math.deg(car_rot.y))
+    vehicle.seats_list[seated].busy_by = player:get_player_name()
+    local veh_rot = vehicle.object:get_rotation()
+    local fixed_veh_yaw = vehicle.fixed_veh_rotate_angle
+    local new_seat_pos = adv_vehicles.rotate_point_around_other_point({x=0, y=0, z=0}, vehicle.seats_list[seated].pos, fixed_veh_yaw, math.deg(veh_rot.y))
+    minetest.debug(dump(new_seat_pos))
     new_seat_pos.y = 9
-    car.seats_list[seated].pos = new_seat_pos
+    vehicle.seats_list[seated].pos = new_seat_pos
+    vehicle.fixed_car_rotate_angle = math.deg(veh_rot.y)
     local meta = player:get_meta()
-    meta:set_string("is_sit", minetest.serialize({car_name, seated}))
-    local new_player_rot = {x=math.deg(car_rot.x), y=car_rot.y-180, z=math.deg(car_rot.z)}
-    player:set_attach(car.object, "", new_seat_pos, new_player_rot)
+    meta:set_string("is_sit", minetest.serialize({veh_name, seated}))
+    local new_player_rot = {x=math.deg(veh_rot.x), y=veh_rot.y-180, z=math.deg(veh_rot.z)}
+    player:set_attach(vehicle.object, "", new_seat_pos, new_player_rot)
     local eye_offset = player:get_eye_offset()
-    player:set_eye_offset({x=-4.0, y=-3.0, z=3.0}, eye_offset)
+    player:set_eye_offset({x=vehicle.seats_list[seated].pos.x, y=vehicle.seats_list[seated].pos.y, z=vehicle.seats_list[seated].pos.z}, eye_offset)
+    --player:set_eye_offset({x=-4.0, y=-3.0, z=3.0}, eye_offset)
     
     
     if model then
@@ -65,15 +68,15 @@ adv_vehicles.attach_player_to_car = function(player, car, seated, model, animati
 end
 
 -- The method detaches a player from the car
-adv_vehicles.detach_player_from_car = function (player, car, seated, model, animation)
-	if not car.seats_list[seated].busy_by then
+adv_vehicles.detach_player_from_veh = function (player, vehicle, seated, model, animation)
+	if not vehicle.seats_list[seated].busy_by then
 		return
 	end
 	
-	car.fixed_car_rotate_angle = math.deg(car.object:get_yaw())
+	--vehicle.fixed_veh_rotate_angle = math.deg(vehicle.object:get_yaw())
 	local meta = player:get_meta()
 	meta:set_string("is_sit", "")
-	car.seats_list[seated].busy_by = nil
+	vehicle.seats_list[seated].busy_by = nil
 	player:set_detach()
 	player:set_eye_offset({x=0, y=0, z=0}, {x=0, y=0, z=0})
 	if model then
@@ -84,8 +87,8 @@ adv_vehicles.detach_player_from_car = function (player, car, seated, model, anim
 	end
 end
 
-adv_vehicles.pave_vector = function (car, vect_length, old_yaw)
-	local yaw = car.object:get_yaw()
+adv_vehicles.pave_vector = function (vehicle, vect_length, old_yaw)
+	local yaw = vehicle.object:get_yaw()
 	local pos2 = {x=0, y=0, z=vect_length}
 	
 	local pos3 = adv_vehicles.rotate_point_around_other_point({x=0, y=0, z=0}, pos2, old_yaw, yaw)
@@ -94,12 +97,12 @@ adv_vehicles.pave_vector = function (car, vect_length, old_yaw)
 	return vector_coords, yaw
 end
 
-adv_vehicles.rotate_collisionbox = function (car, yaw) 
+adv_vehicles.rotate_collisionbox = function (vehicle, yaw) 
 	if yaw % 90 ~= 0 then
 		return
 	end
-	local car_cbox = car.object:get_properties().collisionbox
-	local cur_cbox_dir = car.collisionbox_yaw.along_axis
+	local veh_cbox = vehicle.object:get_properties().collisionbox
+	local cur_cbox_dir = vehicle.collisionbox_yaw.along_axis
 	local axle_num 
 	local new_axle_num = 1
 	local axises_table = {"z", "x", "-z", "-x"}
@@ -128,15 +131,15 @@ adv_vehicles.rotate_collisionbox = function (car, yaw)
 	
 	local new_cbox_dir = axises_table[new_axle_num]
 	local cboxes = {
-		["z"] = {car_cbox[1], car_cbox[2], car_cbox[3], car_cbox[4], car_cbox[5], car_cbox[6]},
-		["x"] = {car_cbox[3], car_cbox[2], car_cbox[1], car_cbox[6], car_cbox[5], car_cbox[4]},
-		["-z"] = {car_cbox[1]*-1, car_cbox[2], car_cbox[3]*-1, car_cbox[4]*-1, car_cbox[5], car_cbox[6]*-1},
-		["-x"] = {car_cbox[3]*-1, car_cbox[2], car_cbox[1]*-1, car_cbox[6]*-1, car_cbox[5], car_cbox[4]*-1}
+		["z"] = {veh_cbox[1], veh_cbox[2], veh_cbox[3], veh_cbox[4], veh_cbox[5], veh_cbox[6]},
+		["x"] = {veh_cbox[3], veh_cbox[2], veh_cbox[1], veh_cbox[6], veh_cbox[5], veh_cbox[4]},
+		["-z"] = {veh_cbox[1]*-1, veh_cbox[2], veh_cbox[3]*-1, veh_cbox[4]*-1, veh_cbox[5], veh_cbox[6]*-1},
+		["-x"] = {veh_cbox[3]*-1, veh_cbox[2], veh_cbox[1]*-1, veh_cbox[6]*-1, veh_cbox[5], veh_cbox[4]*-1}
 	}
 	local new_cbox = cboxes[new_cbox_dir]
-	car.object:set_properties({collisionbox=new_cbox})
-	local old_cbox_yaw = car.collisionbox_yaw.val
-	car.collisionbox_yaw = {val=old_cbox_yaw+yaw, along_axis=new_cbox_dir}
+	vehicle.object:set_properties({collisionbox=new_cbox})
+	local old_cbox_yaw = vehicle.collisionbox_yaw.val
+	vehicle.collisionbox_yaw = {val=old_cbox_yaw+yaw, along_axis=new_cbox_dir}
 end
 	--[[while temp_degs ~= 0 do
 		temp_degs = temp_degs - 90
@@ -231,17 +234,17 @@ local is_acc_set
 local is_oppos_acc_set
 local is_fallen
 -- Bounces a car only due to the falling.
-adv_vehicles.collide = function (car)
-	local vel = car.object:get_velocity()
-	local fixed_vel = car.car_vel
-	local seats_list = car.seats_list
-	local hp = car.object:get_hp()
+adv_vehicles.collide = function (vehicle)
+	local vel = vehicle.object:get_velocity()
+	local fixed_vel = vehicle.veh_vel
+	local seats_list = vehicle.seats_list
+	local hp = vehicle.object:get_hp()
 	if vel.y == 0 and fixed_vel ~= 0 then
 		if not is_fallen then
 		is_fallen = true
-		local acc = car.object:get_acceleration()
-		car.object:set_acceleration({x=acc.x, y=fixed_vel*-5, z=acc.z})
-		car.object:set_hp(hp-math.abs(math.ceil(fixed_vel)), {type="fall"})
+		local acc = vehicle.object:get_acceleration()
+		vehicle.object:set_acceleration({x=acc.x, y=fixed_vel*-5, z=acc.z})
+		vehicle.object:set_hp(hp-math.abs(math.ceil(fixed_vel)), {type="fall"})
 		for seated, data in pairs(seats_list) do
 			if seated.busy_by then
 			     local player = minetest.get_player_by_name(seated.busy_by)
@@ -255,70 +258,70 @@ adv_vehicles.collide = function (car)
 	end
 end
 
-adv_vehicles.car_handle = function (player, car, controls, yaw, max_vel)
+adv_vehicles.vehicle_handle = function (player, vehicle, controls, yaw, max_vel)
 	if controls.right then
-		car.object:set_yaw(yaw-math.rad(1))
-		local new_yaw = math.deg(car.object:get_yaw())
-		local fixed_cbox_yaw = car.collisionbox_yaw.val
+		vehicle.object:set_yaw(yaw-math.rad(1))
+		local new_yaw = math.deg(vehicle.object:get_yaw())
+		local fixed_cbox_yaw = vehicle.collisionbox_yaw.val
 		if new_yaw-fixed_cbox_yaw <= -90 then
 			minetest.debug("1")
-		      adv_vehicles.rotate_collisionbox(car, -90)
+		      adv_vehicles.rotate_collisionbox(vehicle, -90)
 		end
 	end
 	if controls.left then
-		car.object:set_yaw(yaw+math.rad(1))
-		local new_yaw = math.deg(car.object:get_yaw())
-		local fixed_cbox_yaw = car.collisionbox_yaw.val
+		vehicle.object:set_yaw(yaw+math.rad(1))
+		local new_yaw = math.deg(vehicle.object:get_yaw())
+		local fixed_cbox_yaw = vehicle.collisionbox_yaw.val
 		if new_yaw+fixed_cbox_yaw >= 90 then
 			minetest.debug("2")
-		      adv_vehicles.rotate_collisionbox(car, 90)
+		      adv_vehicles.rotate_collisionbox(vehicle, 90)
 		end
 	end
 	if not new_yaw then
-		car.object:get_yaw()
+		vehicle.object:get_yaw()
 	end
 	
-	local vector_coords, new_yaw = adv_vehicles.pave_vector(car, -1.2, yaw)
+	local vector_coords, new_yaw = adv_vehicles.pave_vector(vehicle, -1.2, yaw)
 	local step_acc = vector.length(vector_coords)
-	local acc = car.object:get_acceleration()
-	local vel = car.object:get_velocity()
+	local acc = vehicle.object:get_acceleration()
+	local vel = vehicle.object:get_velocity()
 	if (math.abs(vel.x) or math.abs(vel.z)) >= max_vel then
 		vector_coords.x = 0
 		vector_coords.z = 0
 	end
 	
 	if controls.up then
-		car.object:set_acceleration({x=vector_coords.x/step_acc, y=acc.y, z=vector_coords.z/step_acc})
+		vehicle.object:set_acceleration({x=vector_coords.x/step_acc, y=acc.y, z=vector_coords.z/step_acc})
 		is_acc_set = true
 		
 	else
-		local vel = car.object:get_velocity()
+		local vel = vehicle.object:get_velocity()
 		if (vel.x and vel.z) ~= 0 then
 			if is_acc_set then
-			     car.object:set_acceleration({x=acc.x*-1, y=acc.y, z=acc.z*-1})
+			     vehicle.object:set_acceleration({x=acc.x*-1, y=acc.y, z=acc.z*-1})
 			     is_acc_set = nil
 			end
 		        if ((math.abs(vel.x) and math.abs(vel.z)) < 0.05) and ((vel.x and vel.z) > 0) then
-			    car.object:set_acceleration({x=0, y=acc.y, z=0})
-			    car.object:set_velocity({x=0, y=vel.y, z=0})
+			    vehicle.object:set_acceleration({x=0, y=acc.y, z=0})
+			    vehicle.object:set_velocity({x=0, y=vel.y, z=0})
 			end
 		end
 	end
 	
 	if controls.down then
-		car.object:set_acceleration({x=(vector_coords.x/step_acc)*-1, y=acc.y, z=(vector_coords.z/step_acc)*-1})
+		vehicle.object:set_acceleration({x=(vector_coords.x/step_acc)*-1, y=acc.y, z=(vector_coords.z/step_acc)*-1})
 		is_oppos_acc_set = true
 		
 	else
-		local vel = car.object:get_velocity()
+		local vel = vehicle.object:get_velocity()
 		if (vel.x and vel.z) ~= 0 then
 			if is_oppos_acc_set then
-				car.object:set_acceleration({x=acc.x, y=acc.y, z=acc.z})
+				vehicle.object:set_acceleration({x=acc.x, y=acc.y, z=acc.z})
 				is_oppos_acc_set = nil
 			end
 			if ((math.abs(vel.x) and math.abs(vel.z)) > 0.05) and ((vel.x and vel.z) < 0) then
-				car.object:set_acceleration({x=0, y=acc.y, z=0})
-				car.object:set_velocity({x=0, y=vel.y, z=0})
+				vehicle.object:set_acceleration({x=0, y=acc.y, z=0})
+				vehicle.object:set_velocity({x=0, y=vel.y, z=0})
 			end
 		end
 	end	
@@ -360,41 +363,39 @@ end
 		
 		local nearby_nodes = minetest.find_node_near(pos, z_face, global_nodenames_list)]]
 
-adv_vehicles.register_car = function (carname, car_properties)
-	minetest.register_entity("adv_vehicles:"..carname, {
+adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
+	minetest.register_entity("adv_vehicles:"..vehname, {
 		visual = "mesh",
 		physical = true,
-		mass = car_properties.mass or 2000,
-		max_vel = car_properties.max_vel or 120,
+		mass = veh_properties.mass or 2000,
+		max_vel = veh_properties.max_vel or 120,
 		collide_with_objects = true,
-		collisionbox = car_properties.cbox,
-		mesh = car_properties.model,
-		textures = car_properties.textures,
-		visual_size = car_properties.visual_size or {x=1, y=1, z=1},
+		collisionbox = veh_properties.cbox,
+		mesh = veh_properties.model,
+		textures = veh_properties.textures,
+		visual_size = veh_properties.visual_size or {x=1, y=1, z=1},
 		use_texture_alpha = true,
 		on_activate = function (self, staticdata, dtime_s)
-			self.fixed_car_rotate_angle = 0
+			self.fixed_veh_rotate_angle = 0
 			self.collisionbox_yaw = {val=0, along_axis="z"}
-			self.entity_name = "adv_vehicles:"..carname
-			self.seats_list = car_properties.seats
-			self.car_vel = 0
-			local x_offset = car_properties.player_eye_offset.x
-			local z_offset = car_properties.player_eye_offset.z
-			for seated, data in pairs(self.seats_list) do
-				self.seats_list[seated].pos = {x=x_offset, y=0, z=z_offset}
-				x_offset = x_offset * -1
+			self.entity_name = "adv_vehicles:"..vehname
+			self.seats_list = {}
+			for seated, data in pairs(veh_properties.seats) do
+				self.seats_list[seated] = data
+				self.seats_list[seated].pos.y = 0
 			end
+			self.veh_vel = 0
 	                                               
 			local acc = self.object:get_acceleration()
-			local gravity_strength = car_properties.mass * -100
+			local gravity_strength = veh_properties.mass * -100
 			self.object:set_acceleration({x=acc.x, y=gravity_strength, z=acc.z})
-			self.fixed_car_rotate_angle = self.object:get_yaw()
+			--self.fixed_veh_rotate_angle = self.object:get_yaw()
 			minetest.register_globalstep(function(dtime)
 				local entity = self.object:get_luaentity()
 				if entity then
 				local vel = self.object:get_velocity()
 				if vel.y ~= 0 then
-				    self.car_vel = vel.y
+				    self.veh_vel = vel.y
 				end
 				local acc = self.object:get_acceleration()
 				if acc.y > 0 then
@@ -404,10 +405,10 @@ adv_vehicles.register_car = function (carname, car_properties)
 				end
 			end)
 		end,
-		on_handle = adv_vehicles.car_handle,
+		on_handle = adv_vehicles.vehicle_handle,
 		on_death = function (self, killer)
 			for num, data in pairs(self.seats_list) do
-				if self.seats_list[num].busy_by and minetest.get_player_by_name(self.seats_list[num].busy_by) then adv_vehicles.detach_player_from_car(killer, self, num, "character.b3d") end
+				if self.seats_list[num].busy_by and minetest.get_player_by_name(self.seats_list[num].busy_by) then adv_vehicles.detach_player_from_veh(killer, self, num, "character.b3d") end
 		        end
 		end,
 		on_attach_child = function (self, child)
@@ -418,7 +419,7 @@ adv_vehicles.register_car = function (carname, car_properties)
 				local entity = self.object:get_luaentity()
 				if entity then
 					if self.seats_list.driver.busy_by then
-						local new_yaw = self.on_handle(child, entity, child:get_player_control(), yaw, car_properties.max_vel)
+						local new_yaw = self.on_handle(child, entity, child:get_player_control(), yaw, veh_properties.max_vel)
 						yaw = new_yaw
 					end
 	                                                                           
@@ -429,17 +430,32 @@ adv_vehicles.register_car = function (carname, car_properties)
 			local seats_list = self.seats_list
 			for seated, data in pairs(seats_list) do
 				if data.busy_by == nil  then
-					if seated == "driver" then adv_vehicles.attach_player_to_car(clicker, self, seated, "driver.b3d")
-					else adv_vehicles.attach_player_to_car(clicker, self, seated, nil, {x=81, y=81}) end
+					if seated == "driver" then adv_vehicles.attach_player_to_veh(clicker, self, seated, "driver.b3d")
+					else adv_vehicles.attach_player_to_veh(clicker, self, seated, nil, {x=81, y=81}) end
 					break
 				elseif data.busy_by == clicker:get_player_name() then
-					if seated == "driver" then adv_vehicles.detach_player_from_car(clicker, self, seated, "character.b3d")
-					else adv_vehicles.detach_player_from_car(clicker, self, seated, nil, {x=1, y=80}) end
+					if seated == "driver" then adv_vehicles.detach_player_from_veh(clicker, self, seated, "character.b3d")
+					else adv_vehicles.detach_player_from_veh(clicker, self, seated, nil, {x=1, y=80}) end
 					break
 				end
 			end
 		end
 	})
+		
+	if veh_item then
+		minetest.register_craftitem("adv_vehicles:"..vehname, {
+			description = veh_item.description,
+			inventory_image = veh_item.inv_image,
+			on_place = function (itemstack, placer, pointed_thing)
+				if pointed_thing.type == "node" then
+					local object = minetest.add_entity(pointed_thing.above, "adv_vehicles:"..vehname)
+					local yaw = math.deg(placer:get_look_horizontal())
+					object:set_yaw(math.rad(yaw+180))
+					minetest.debug(math.deg(object:get_yaw()))
+				end
+			end
+		})
+	end
 end
 local died_cars = {}
 --[[minetest.register_entity("adv_vehicles:simple_car", {
@@ -560,7 +576,7 @@ minetest.register_on_dieplayer(function (player)
 		local attach = player:get_attach()
 		local player_meta = minetest.deserialize(meta:get_string("is_sit"))
 		local seated = player_meta.seated
-		adv_vehicles.detach_player_from_car(player, attach[1], seated, "character.b3d")
+		adv_vehicles.detach_player_from_veh(player, attach[1], seated, "character.b3d")
         end
 end)
 
