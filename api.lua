@@ -455,6 +455,12 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				end
 			end
 		})
+		
+ 		minetest.debug(dump(veh_item.craft_recipe))
+		minetest.register_craft({
+			output = "adv_vehicles:"..vehname,
+			recipe = veh_item.craft_recipe
+		})
 	end
 end
 local died_cars = {}

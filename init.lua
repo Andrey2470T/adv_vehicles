@@ -1,6 +1,44 @@
 local modpath = minetest.get_modpath("adv_vehicles")
 dofile(modpath.."/api.lua")
 
+minetest.register_craftitem("adv_vehicles:car_frame", {
+	description = "Car Frame (raw)",
+	inventory_image = "car_frame.png"
+})
+
+minetest.register_craftitem("adv_vehicles:wheel", {
+	description = "Wheel",
+	inventory_image = "wheel.png"
+})
+
+local plastic_itemstring
+if minetest.get_modpath("basic_materials") then
+	plastic_itemstring = "basic_materials:plastic_sheet"
+elseif minetest.get_modpath("luxury_decor") then
+	plastic_itemstring = "luxury_decor:plastic_sheet"
+else
+	error("'plastic_sheet' crafting element is required to be registered!")
+end
+
+minetest.register_craft({
+	output = "adv_vehicles:car_frame",
+	recipe = {
+                  {plastic_itemstring, plastic_itemstring, plastic_itemstring},
+                  {plastic_itemstring, plastic_itemstring, plastic_itemstring},
+                  {plastic_itemstring, "", ""}
+                 }
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:wheel",
+	recipe = {
+                  {plastic_itemstring, plastic_itemstring, "dye:dark_grey"},
+                  {"default:steel_ingot", plastic_itemstring, ""},
+                  {"", "", ""}
+                 }
+                        })
+
+
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
@@ -14,8 +52,12 @@ adv_vehicles.register_vehicle("bmw_118_two_seats", {
                                                    }, {
                                                     
 	description = "BMW 118 two-seater",
-	inv_image = "bmw_two_seats_inv.png"
-                                                   })
+	inv_image = "bmw_two_seats_inv.png",
+	craft_recipe = {
+                        {"adv_vehicles:car_frame", "dye:blue", ""},
+                        {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
+                        {"adv_vehicles:wheel", plastic_itemstring, ""}
+	}})
 	
 --[[minetest.register_craftitem("adv_vehicles:bmw_two_seats_inv", {
 	description = "BMW 118 two-seater",
@@ -51,8 +93,12 @@ adv_vehicles.register_vehicle("volvo", {
                                                    }, {
                                                                                                 
 	description = "Volvo Bus",
-	inv_image = "volvo_inv.png"
-							})
+	inv_image = "volvo_inv.png",
+	craft_recipe = {
+                        {"adv_vehicles:car_frame", "dye:yellow", "dye:yellow"},
+                        {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
+                        {"adv_vehicles:wheel", plastic_itemstring, "default:steel_ingot"}
+	}})
 
 
 adv_vehicles.register_vehicle("kamaz", {
@@ -62,11 +108,18 @@ adv_vehicles.register_vehicle("kamaz", {
 	cbox = {-1.5, -0.5, -3.5, 1.5, 2.5, 3.5},
 	model = "kamaz.b3d",
 	textures = {"kamaz.png"},
-	seats = {["driver"]={busy_by=nil, pos={x=0, z=-11.0}}, 
+	seats = {["driver"]={busy_by=nil, pos={x=0, z=-18.0}}, 
 	},
-	player_eye_offset = {x=0, y=0, z=-3.5}
+	player_eye_offset = {x=0, y=0, z=-18.0}
 	}, {
                                            
 		description = "Kamaz Truck",
-		inv_image = "kamaz_inv.png"
+		inv_image = "kamaz_inv.png",
+                craft_recipe = {
+                            {"adv_vehicles:car_frame", "dye:grey", "dye:white"},
+                            {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
+                            {"adv_vehicles:wheel", plastic_itemstring, "default:steel_ingot"}
+                           }
 	})
+
+
