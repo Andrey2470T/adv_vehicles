@@ -3,7 +3,7 @@ Adds smart different cars (passenger cars, trucks, buses, service). This mod int
 
 ## API Documentation
 ###adv_vehicles.register_vehicle(vehicle_name, vehicle_properties, vehicle_item)
---Registers a vehicle in the game.
+--Registers a vehicle in the game as an entity and an item spawner for it.
 
 *vehicle_name* is entity string.
 *vehicle_properties* is a table with following fields:
@@ -32,7 +32,18 @@ Adds smart different cars (passenger cars, trucks, buses, service). This mod int
 *vehicle* is ObjectRef.
 *seated* is "driver" or "passenger" keys depending on which field in *seats_list* used.
 *model* is vehicle model (.b3d format).
-*aniamtion* is animation table.
+*animation* is a table with x, y fields
+
+###adv_vehicles.detach_player_from_veh(player, vehicle, seated, model, animation)
+--Opposite to *adv_vehicles.attach_player_to_car*. Detaches a player from the car and the same arguments.
+
+###adv_vehicles.pave_vector(vehicle, vect_length, old_yaw)
+--Paves the vector from '0' point relatively to the car origin towards to *vect_length*.
+*old_yaw* is a integer value that saving in self.fixed_veh_rotate_angle.
+This method should be caused continuously per 0.1 second to recalculate the car direction.
+
+###adv_vehicles.rotate_collisionbox(vehicle, yaw)
+This method is WIP and doesnt work properly currently.
 *This documentation is in working progress.*
      
      
