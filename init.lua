@@ -44,8 +44,8 @@ adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	mass = 1.3,
 	max_vel = 5,
 	cbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
-	model = "bmw_118_two_seats.b3d",
-	textures = {"bmw_118_two_seats.png"},
+	model = "bmw_118_two_seats_redone.b3d",
+	textures = {"bmw_118_two_seats_new_tex.png"},
 	seats = {["driver"]={busy_by=nil, pos={x=-3.5, z=-3.5}}, 
                  ["passenger"]={busy_by=nil, pos={x=3.5, z=-3.5}}},
 	player_eye_offset = {x=-3.5, y=0, z=-3.5}
