@@ -46,16 +46,15 @@ adv_vehicles.attach_player_to_veh = function(player, vehicle, seated, model, ani
     local veh_rot = vehicle.object:get_rotation()
     local fixed_veh_yaw = vehicle.fixed_veh_rotate_angle
     local new_seat_pos = adv_vehicles.rotate_point_around_other_point({x=0, y=0, z=0}, vehicle.seats_list[seated].pos, fixed_veh_yaw, math.deg(veh_rot.y))
-    minetest.debug(dump(new_seat_pos))
     new_seat_pos.y = 9
     vehicle.seats_list[seated].pos = new_seat_pos
     vehicle.fixed_car_rotate_angle = math.deg(veh_rot.y)
     local meta = player:get_meta()
     meta:set_string("is_sit", minetest.serialize({veh_name, seated}))
-    local new_player_rot = {x=math.deg(veh_rot.x), y=veh_rot.y-180, z=math.deg(veh_rot.z)}
+    local new_player_rot = {x=math.deg(veh_rot.x), y=veh_rot.y+180, z=math.deg(veh_rot.z)}
     player:set_attach(vehicle.object, "", new_seat_pos, new_player_rot)
     local eye_offset = player:get_eye_offset()
-    player:set_eye_offset({x=vehicle.seats_list[seated].pos.x, y=vehicle.seats_list[seated].pos.y, z=vehicle.seats_list[seated].pos.z}, eye_offset)
+    player:set_eye_offset({x=vehicle.seats_list[seated].pos.x, y=0, z=vehicle.seats_list[seated].pos.z}, eye_offset)
     --player:set_eye_offset({x=-4.0, y=-3.0, z=3.0}, eye_offset)
     
     
@@ -301,25 +300,26 @@ adv_vehicles.vehicle_handle = function (player, vehicle, controls, yaw, max_vel)
 			     vehicle.object:set_acceleration({x=acc.x*-1, y=acc.y, z=acc.z*-1})
 			     is_acc_set = nil
 			end
-		        if ((math.abs(vel.x) and math.abs(vel.z)) < 0.05) and ((vel.x and vel.z) > 0) then
+		        if ((math.abs(vel.x) and math.abs(vel.z)) < 0.01) and not is_acc_set then
 			    vehicle.object:set_acceleration({x=0, y=acc.y, z=0})
 			    vehicle.object:set_velocity({x=0, y=vel.y, z=0})
 			end
 		end
 	end
-	
 	if controls.down then
 		vehicle.object:set_acceleration({x=(vector_coords.x/step_acc)*-1, y=acc.y, z=(vector_coords.z/step_acc)*-1})
 		is_oppos_acc_set = true
 		
 	else
 		local vel = vehicle.object:get_velocity()
+		minetest.debug(dump({x=vel.x, z=vel.z}))
 		if (vel.x and vel.z) ~= 0 then
 			if is_oppos_acc_set then
 				vehicle.object:set_acceleration({x=acc.x, y=acc.y, z=acc.z})
 				is_oppos_acc_set = nil
 			end
-			if ((math.abs(vel.x) and math.abs(vel.z)) > 0.05) and ((vel.x and vel.z) < 0) then
+			if ((math.abs(vel.x) and math.abs(vel.z)) > 0.01) and not is_oppos_acc_set then
+				minetest.debug("TRUE")
 				vehicle.object:set_acceleration({x=0, y=acc.y, z=0})
 				vehicle.object:set_velocity({x=0, y=vel.y, z=0})
 			end
