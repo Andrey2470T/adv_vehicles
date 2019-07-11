@@ -42,7 +42,7 @@ minetest.register_craft({
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
-	max_vel = 5,
+	max_vel = 10,
 	cbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
 	model = "bmw_118_two_seats_redone.b3d",
 	textures = {"bmw_118_two_seats_new_tex.png"},
