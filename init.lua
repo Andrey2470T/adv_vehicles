@@ -42,13 +42,13 @@ minetest.register_craft({
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
+	acc_vector_length = 10.0,
 	max_vel = 10,
 	cbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
 	model = "bmw_118_two_seats_redone.b3d",
 	textures = {"bmw_118_two_seats_new_tex.png"},
-	seats = {["driver"]={busy_by=nil, pos={x=-3.5, z=3.5}}, 
-                 ["passenger"]={busy_by=nil, pos={x=3.5, z=3.5}}},
-	player_eye_offset = {x=-3.5, y=0, z=3.5}
+	seats = {["driver"]={busy_by=nil, pos={x=4.0, z=-3.5}, eye_offset={x=-3.0, z=5.0}}, 
+                 ["passenger"]={busy_by=nil, pos={x=-8.0, z=-3.5}, eye_offset={x=3.0, z=5.0}}}
                                                    }, {
                                                     
 	description = "BMW 118 two-seater",
@@ -76,11 +76,12 @@ end
 adv_vehicles.register_vehicle("volvo", {
 	hp_max = 130,
 	mass = 25,
+	acc_vector_length = 6.5,
 	max_vel = 3,
 	cbox = {-1.2, -0.5, -4.5, 1.2, 2.0, 4.5},
 	model = "volvo.b3d",
 	textures = {"volvo.png"},
-	seats = {["driver"]={busy_by=nil, pos={x=3.5, z=-13.0}}, 
+	seats = {["driver"]={busy_by=nil, pos={x=-4.5, z=-26.0}, eye_offset={x=4.0, z=31.0}}, 
                  ["passenger"]={busy_by=nil, pos={x=-3.5, z=-2.0}},
 		 ["passenger"]={busy_by=nil, pos={x=3.5, z=-2.0}},
                  ["passenger"]={busy_by=nil, pos={x=-3.5, z=-1.0}},
@@ -88,8 +89,7 @@ adv_vehicles.register_vehicle("volvo", {
                  ["passenger"]={busy_by=nil, pos={x=3.5, z=0}},
                  ["passenger"]={busy_by=nil, pos={x=-3.0, z=5.0}},
                  ["passenger"]={busy_by=nil, pos={x=3.0, z=5.0}}
-                },
-	player_eye_offset = {x=-3.5, y=0, z=-3.5}
+                }
                                                    }, {
                                                                                                 
 	description = "Volvo Bus",
@@ -104,6 +104,7 @@ adv_vehicles.register_vehicle("volvo", {
 adv_vehicles.register_vehicle("kamaz", {
 	hp_max = 160,
 	mass = 40,
+	acc_vector_length = 6.0,
 	max_vel = 1.5,
 	cbox = {-1.5, -0.5, -3.5, 1.5, 2.5, 3.5},
 	model = "kamaz.b3d",
