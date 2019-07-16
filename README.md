@@ -52,8 +52,9 @@ This method is WIP and doesnt work properly currently.
 
 ## Crafting Recipes
 -----------------------------
-***Car Frame***
 L/B = Luxury Decor or Basic Materials
+
+***Car Frame***
 
 -------------------
 L/B plastic_sheet L/B plastic_sheet L/B plastic_sheet
