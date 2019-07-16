@@ -58,7 +58,9 @@ L/B = Luxury Decor or Basic Materials
 
 -------------------
 L/B plastic_sheet L/B plastic_sheet L/B plastic_sheet
+
 L/B plastic_sheet L/B plastic_sheet L/B plastic_sheet
+
 L/B plastic_sheet
 
 -------------------
