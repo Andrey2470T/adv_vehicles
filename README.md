@@ -48,6 +48,7 @@ This method should be caused continuously per 0.1 second to recalculate the car 
 
 ###adv_vehicles.rotate_collisionbox(vehicle, yaw)
 This method is WIP and doesnt work properly currently.
+
 *This documentation is in working progress.*
 
 ## Crafting Recipes
