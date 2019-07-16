@@ -68,6 +68,7 @@ L/B plastic_sheet
 ***Wheel***
 -------------------
 L/B plastic_sheet L/B plastic_sheet dye:dark_green
+
 default:steel_ingot L/B plastic_sheet
 
 -------------------
@@ -75,7 +76,9 @@ default:steel_ingot L/B plastic_sheet
 ***BMW 118 Car***
 -------------------
 adv_vehicles:car_frame dye:blue
+
 adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+
 adv_vehicles:wheel L/B plastic_sheet
 
 -------------------
@@ -83,7 +86,9 @@ adv_vehicles:wheel L/B plastic_sheet
 ***Volvo Bus***
 -------------------
 adv_vehicles:car_frame dye:yellow dye:yellow
+
 adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+
 adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
 
 -------------------
@@ -91,7 +96,9 @@ adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
 ***Kamaz Truck***
 -------------------
 adv_vehicles:car_frame dye:grey dye:white
+
 adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+
 adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
 
 -------------------
