@@ -1,7 +1,11 @@
-# Advanced Vehicles
+# Advanced Vehicles 1.0.0-Release Candidate #1
+
+## Description
+------------------------------
 Adds smart different cars (passenger cars, trucks, buses, service). This mod introduces little API to register cars with analogical parameters that use the mod (see *API Documentation)
 
 ## API Documentation
+------------------------------
 ###adv_vehicles.register_vehicle(vehicle_name, vehicle_properties, vehicle_item)
 --Registers a vehicle in the game as an entity and an item spawner for it.
 
@@ -45,5 +49,48 @@ This method should be caused continuously per 0.1 second to recalculate the car 
 ###adv_vehicles.rotate_collisionbox(vehicle, yaw)
 This method is WIP and doesnt work properly currently.
 *This documentation is in working progress.*
+
+## Crafting Recipes
+-----------------------------
+***Car Frame***
+L/B = Luxury Decor or Basic Materials
+
+-------------------
+L/B plastic_sheet L/B plastic_sheet L/B plastic_sheet
+L/B plastic_sheet L/B plastic_sheet L/B plastic_sheet
+L/B plastic_sheet
+
+-------------------
      
-     
+***Wheel***
+-------------------
+L/B plastic_sheet L/B plastic_sheet dye:dark_green
+default:steel_ingot L/B plastic_sheet
+
+-------------------
+
+***BMW 118 Car***
+-------------------
+adv_vehicles:car_frame dye:blue
+adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+adv_vehicles:wheel L/B plastic_sheet
+
+-------------------
+
+***Volvo Bus***
+-------------------
+adv_vehicles:car_frame dye:yellow dye:yellow
+adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
+
+-------------------
+
+***Kamaz Truck***
+-------------------
+adv_vehicles:car_frame dye:grey dye:white
+adv_vehicles:wheel adv_vehicles:wheel adv_vehicles:wheel
+adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
+
+-------------------
+
+
