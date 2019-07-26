@@ -1,6 +1,14 @@
 local modpath = minetest.get_modpath("adv_vehicles")
 dofile(modpath.."/api.lua")
 
+local function random_dropped_items_amount(player, itemstack, max_items_amount)
+	local random_items_amount_to_give = math.random(max_items_amount)
+        
+        local stack = ItemStack(itemstack.. tostring(random_items_amount_to_give))
+	local inv = minetest.get_inventory({type="player", name=player:get_player_name()})
+	inv:add_item("main", stack)
+end
+
 minetest.register_craftitem("adv_vehicles:car_frame", {
 	description = "Car Frame (raw)",
 	inventory_image = "car_frame.png"
@@ -10,6 +18,94 @@ minetest.register_craftitem("adv_vehicles:wheel", {
 	description = "Wheel",
 	inventory_image = "wheel.png"
 })
+
+minetest.register_craftitem("adv_vehicles:silicon_dust", {
+	description = "Silicon Dust",
+	inventory_image = "silicon_dust.png"
+})
+
+minetest.register_craftitem("adv_vehicles:aluminium_dust", {
+	description = "Aluminium Dust",
+	inventory_image = "aluminium_dust.png"
+})
+
+minetest.register_craftitem("adv_vehicles:aluminium_lump", {
+	description = "Aluminium Lump",
+	inventory_image = "aluminium_lump.png"
+})
+
+minetest.register_craftitem("adv_vehicles:silicon_lump", {
+	description = "Silicon Lump",
+	inventory_image = "silicon_lump.png"
+})
+
+minetest.register_craftitem("adv_vehicles:headlight_red", {
+	description = "Red Headlight",
+	inventory_image = "headlight_red.png"
+})
+
+minetest.register_craftitem("adv_vehicles:headlight_white", {
+	description = "White Headlight",
+	inventory_image = "headlight_white.png"
+})
+
+minetest.register_node("adv_vehicles:aluminium_ore", {
+    description = "Aluminium Ore",
+    tiles = {"default_stone.png^aluminium_ore.png"},
+    is_ground_content = true,
+    paramtype = "light",
+    light_source = 1,
+    drop="",
+    groups = {cracky=3, oddly_breakable_by_hand=1},
+    sounds = default.node_sound_defaults(),
+    after_dig_node = function(pos, oldnode, oldmetadata, digger)
+       random_dropped_items_amount(digger, "adv_vehicles:aluminium_lump ", 6)
+    end
+})
+
+minetest.register_node("adv_vehicles:silicon_ore", {
+    description = "Silicon Ore",
+    tiles = {"default_stone.png^silicon_ore.png"},
+    is_ground_content = true,
+    paramtype = "light",
+    light_source = 6,
+    drop="",
+    groups = {cracky=3, oddly_breakable_by_hand=1},
+    sounds = default.node_sound_defaults(),
+    after_dig_node = function(pos, oldnode, oldmetadata, digger)
+       random_dropped_items_amount(digger, "adv_vehicles:silicon_lump ", 4)
+    end
+})
+
+minetest.register_ore({
+    ore_type = "sheet",
+    ore = "adv_vehicles:aluminium_ore",
+    wherein = "default:stone",
+    clust_scarcity = 180,
+    clust_num_ores = 7,
+    clust_size = 4,
+    height_min = -31000,
+    height_max = -40
+})
+
+minetest.register_ore({
+    ore_type = "scatter",
+    ore = "adv_vehicles:silicon_ore",
+    wherein = "default:stone",
+    clust_scarcity = 140,
+    clust_num_ores = 5,
+    clust_size = 3,
+    height_min = -31000,
+    height_max = -60
+})
+
+for i, v in pairs({"red", "white", "blue", "green"}) do
+	minetest.register_craftitem("adv_vehicles:".. v .. "_led", {
+		description = string.upper(string.sub(v, 1, 1)) .. string.sub(v, 2) .. " LED",
+		inventory_image = v .. "_led.png"
+	})
+end
+
 
 local plastic_itemstring
 if minetest.get_modpath("basic_materials") then
@@ -36,9 +132,61 @@ minetest.register_craft({
                   {"default:steel_ingot", plastic_itemstring, ""},
                   {"", "", ""}
                  }
-                        })
+})
 
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:aluminium_dust",
+	recipe = {"adv_vehicles:aluminium_lump"}
+})
 
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:silicon_dust",
+	recipe = {"adv_vehicles:silicon_lump"}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:red_led",
+	recipe = {
+		{"adv_vehicles:aluminium_dust", plastic_itemstring, "default:copper_ingot"},
+		{"", "", ""},
+		{"", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:blue_led",
+	recipe = {
+		{"adv_vehicles:silicon_dust", plastic_itemstring, "default:copper_ingot"},
+		{"", "", ""},
+		{"", "", ""}
+	}
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "adv_vehicles:white_led",
+	recipe = {"adv_vehicles:red_led", "adv_vehicles:blue_led", "adv_vehicles:green_led"}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:headlight_red",
+	recipe = {
+		{"adv_vehicles:red_led", "adv_vehicles:red_led", "adv_vehicles:red_led"},
+		{"adv_vehicles:red_led", plastic_itemstring, "adv_vehicles:red_led"},
+		{"adv_vehicles:red_led", "default:steel_ingot", "adv_vehicles:red_led"}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:headlight_white",
+	recipe = {
+		{"adv_vehicles:white_led", "adv_vehicles:white_led", "adv_vehicles:white_led"},
+		{"adv_vehicles:white_led", plastic_itemstring, "adv_vehicles:white_led"},
+		{"adv_vehicles:white_led", "default:steel_ingot", "adv_vehicles:white_led"}
+	}
+})
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
