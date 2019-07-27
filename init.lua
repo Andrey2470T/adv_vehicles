@@ -9,9 +9,9 @@ local function random_dropped_items_amount(player, itemstack, max_items_amount)
 	inv:add_item("main", stack)
 end
 
-minetest.register_craftitem("adv_vehicles:car_frame", {
-	description = "Car Frame (raw)",
-	inventory_image = "car_frame.png"
+minetest.register_craftitem("adv_vehicles:car_frame_material", {
+	description = "Car Frame Material",
+	inventory_image = "car_frame_material.png"
 })
 
 minetest.register_craftitem("adv_vehicles:wheel", {
@@ -117,19 +117,19 @@ else
 end
 
 minetest.register_craft({
-	output = "adv_vehicles:car_frame",
+	output = "adv_vehicles:car_frame_material",
 	recipe = {
-                  {plastic_itemstring, plastic_itemstring, plastic_itemstring},
-                  {plastic_itemstring, plastic_itemstring, plastic_itemstring},
-                  {plastic_itemstring, "", ""}
+                  {"default:steel_ingot", "adv_vehicles:aluminium_dust", "adv_vehicles:aluminium_dust"},
+                  {"default:steel_ingot", plastic_itemstring, plastic_itemstring},
+                  {plastic_itemstring, "xpanes:pane_flat", ""}
                  }
 })
 
 minetest.register_craft({
 	output = "adv_vehicles:wheel",
 	recipe = {
-                  {plastic_itemstring, plastic_itemstring, "dye:dark_grey"},
-                  {"default:steel_ingot", plastic_itemstring, ""},
+                  {"technic:rubber", "technic:rubber", plastic_itemstring},
+                  {"default:steel_ingot", "technic:rubber", ""},
                   {"", "", ""}
                  }
 })

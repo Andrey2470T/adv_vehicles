@@ -190,8 +190,9 @@ adv_vehicles.vehicle_braking = function (vehicle, vector_l)
 	
 	local new_acc = obj:get_acceleration()
 	local new_vel = obj:get_velocity()
-	if (math.abs(new_vel.x) and math.abs(new_vel.z)) < 0.03 and not is_car_driven then
-		minetest.debug("TRUE")
+	local new_vel_l = vector.length(new_vel)
+	minetest.debug(vector.length(new_vel))
+	if new_vel_l < 0.03 and not is_car_driven then
 		obj:set_velocity({x=0, y=new_vel.y, z=0})
 		obj:set_acceleration({x=0, y=new_acc.y, z=0})
 	end
@@ -248,7 +249,6 @@ end
 		local nearby_nodes = minetest.find_node_near(pos, z_face, global_nodenames_list)]]
 
 -- Registers a vehicle to the world and creates a spawner item for it with a crafting recipe.
-local is_origin_yaw_set
 adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 	minetest.register_entity("adv_vehicles:"..vehname, {
 		visual = "mesh",
@@ -309,14 +309,13 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 						end
 					end
 				end
-				--entity.fixed_veh_rotate_angle = obj:get_yaw()
 				
 				-- If a length of the velocity vector exceeds a 'max_vel' value, sets to zero the acceleration vector.
 				local vel_length = vector.length(vel)
 				if vel_length >= veh_properties.max_vel then
 					obj:set_acceleration({x=0, y=gravity_strength, z=0})
 				end
-				if not is_car_driven and (vel.x and vel.z) ~= 0 then
+				if not is_car_driven and vel_length ~= 0 then
 					adv_vehicles.vehicle_braking(entity, 8)
 				end
 				end
@@ -376,7 +375,6 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 					local object = minetest.add_entity(pointed_thing.above, "adv_vehicles:"..vehname)
 					local yaw = math.deg(placer:get_look_horizontal())
 					object:set_yaw(math.rad(yaw+180))
-					--is_origin_yaw_set=true
 				end
 			end
 		})
