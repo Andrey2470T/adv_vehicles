@@ -19,6 +19,26 @@ minetest.register_craftitem("adv_vehicles:wheel", {
 	inventory_image = "wheel.png"
 })
 
+minetest.register_craftitem("adv_vehicles:steering_wheel", {
+	description = "Steering Wheel",
+	inventory_image = "steering_wheel.png"
+})
+
+minetest.register_craftitem("adv_vehicles:diesel_ice", {
+	description = "Diesel ICE (Internal Combustion Engine)",
+	inventory_image = "diesel_ice.png"
+})
+
+minetest.register_craftitem("adv_vehicles:cylinder", {
+	description = "ICE Cylinder",
+	inventory_image = "cylinder.png"
+})
+
+minetest.register_craftitem("adv_vehicles:crankshaft", {
+	description = "ICE Crankshaft",
+	inventory_image = "crankshaft.png"
+})
+
 minetest.register_craftitem("adv_vehicles:silicon_dust", {
 	description = "Silicon Dust",
 	inventory_image = "silicon_dust.png"
@@ -119,8 +139,8 @@ end
 minetest.register_craft({
 	output = "adv_vehicles:car_frame_material",
 	recipe = {
-                  {"default:steel_ingot", "adv_vehicles:aluminium_dust", "adv_vehicles:aluminium_dust"},
-                  {"default:steel_ingot", plastic_itemstring, plastic_itemstring},
+                  {"default:steel_ingot", plastic_itemstring, "adv_vehicles:aluminium_dust"},
+                  {"default:steel_ingot", plastic_itemstring, "adv_vehicles:aluminium_dust"},
                   {plastic_itemstring, "xpanes:pane_flat", ""}
                  }
 })
@@ -128,8 +148,8 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "adv_vehicles:wheel",
 	recipe = {
-                  {"technic:rubber", "technic:rubber", plastic_itemstring},
-                  {"default:steel_ingot", "technic:rubber", ""},
+                  {plastic_itemstring, plastic_itemstring, "dye:dark_grey"},
+                  {"default:steel_ingot", plastic_itemstring, ""},
                   {"", "", ""}
                  }
 })
