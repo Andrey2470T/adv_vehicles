@@ -14,9 +14,14 @@ minetest.register_craftitem("adv_vehicles:car_frame_material", {
 	inventory_image = "car_frame_material.png"
 })
 
-minetest.register_craftitem("adv_vehicles:wheel", {
-	description = "Wheel",
-	inventory_image = "wheel.png"
+minetest.register_craftitem("adv_vehicles:tire", {
+	description = "Tire",
+	inventory_image = "tire.png"
+})
+
+minetest.register_craftitem("adv_vehicles:tires_bunch", {
+	description = "Bunch of tires",
+	inventory_image = "tires_bunch.png"
 })
 
 minetest.register_craftitem("adv_vehicles:steering_wheel", {
@@ -34,6 +39,11 @@ minetest.register_craftitem("adv_vehicles:cylinder", {
 	inventory_image = "cylinder.png"
 })
 
+minetest.register_craftitem("adv_vehicles:piston", {
+	description = "ICE Piston",
+	inventory_image = "piston.png"
+})
+
 minetest.register_craftitem("adv_vehicles:crankshaft", {
 	description = "ICE Crankshaft",
 	inventory_image = "crankshaft.png"
@@ -49,6 +59,21 @@ minetest.register_craftitem("adv_vehicles:aluminium_dust", {
 	inventory_image = "aluminium_dust.png"
 })
 
+minetest.register_craftitem("adv_vehicles:phosphorus_dust", {
+	description = "Phosphorus Dust",
+	inventory_image = "phosphorus_dust.png"
+})
+
+minetest.register_craftitem("adv_vehicles:aluminium_and_silicon_dusts", {
+	description = "Aluminium & Silicon Dusts",
+	inventory_image = "aluminium_and_silicon_dusts.png"
+})
+
+minetest.register_craftitem("adv_vehicles:silumin_ingot", {
+	description = "Silumin Ingot",
+	inventory_image = "silumin.png"
+})
+
 minetest.register_craftitem("adv_vehicles:aluminium_lump", {
 	description = "Aluminium Lump",
 	inventory_image = "aluminium_lump.png"
@@ -57,6 +82,11 @@ minetest.register_craftitem("adv_vehicles:aluminium_lump", {
 minetest.register_craftitem("adv_vehicles:silicon_lump", {
 	description = "Silicon Lump",
 	inventory_image = "silicon_lump.png"
+})
+
+minetest.register_craftitem("adv_vehicles:phosphorus_lump", {
+	description = "Phosphorus Lump",
+	inventory_image = "phosphorus.png"
 })
 
 minetest.register_craftitem("adv_vehicles:headlight_red", {
@@ -69,6 +99,16 @@ minetest.register_craftitem("adv_vehicles:headlight_white", {
 	inventory_image = "headlight_white.png"
 })
 
+minetest.register_craftitem("adv_vehicles:two_red_headlights", {
+	description = "Two Red Headlights",
+	inventory_image = "two_red_headlights.png"
+})
+
+minetest.register_craftitem("adv_vehicles:two_white_headlights", {
+	description = "Two White Headlights",
+	inventory_image = "two_white_headlights.png"
+})
+
 minetest.register_node("adv_vehicles:aluminium_ore", {
     description = "Aluminium Ore",
     tiles = {"default_stone.png^aluminium_ore.png"},
@@ -76,8 +116,8 @@ minetest.register_node("adv_vehicles:aluminium_ore", {
     paramtype = "light",
     light_source = 1,
     drop="",
-    groups = {cracky=3, oddly_breakable_by_hand=1},
-    sounds = default.node_sound_defaults(),
+    groups = {cracky=3},
+    sounds = default.node_sound_stone_defaults(),
     after_dig_node = function(pos, oldnode, oldmetadata, digger)
        random_dropped_items_amount(digger, "adv_vehicles:aluminium_lump ", 6)
     end
@@ -90,11 +130,24 @@ minetest.register_node("adv_vehicles:silicon_ore", {
     paramtype = "light",
     light_source = 6,
     drop="",
-    groups = {cracky=3, oddly_breakable_by_hand=1},
-    sounds = default.node_sound_defaults(),
+    groups = {cracky=3},
+    sounds = default.node_sound_stone_defaults(),
     after_dig_node = function(pos, oldnode, oldmetadata, digger)
        random_dropped_items_amount(digger, "adv_vehicles:silicon_lump ", 4)
     end
+})
+
+minetest.register_node("adv_vehicles:phosphorus_ore", {
+	description = "Phosphorus Ore",
+	tiles = {"default_stone.png^phosphorus_ore.png"},
+	is_ground_content = true,
+	paramtype = "light",
+	drop="",
+	groups = {cracky=2.3},
+	sounds = default.node_sound_stone_defaults(),
+	after_dig_node = function(pos, oldnode, oldmetadata, digger)
+	random_dropped_items_amount(digger, "adv_vehicles:phosphorus_lump ", 3)
+	end
 })
 
 minetest.register_ore({
@@ -117,6 +170,17 @@ minetest.register_ore({
     clust_size = 3,
     height_min = -31000,
     height_max = -60
+})
+
+minetest.register_ore({
+	ore_type = "blob",
+	ore = "adv_vehicles:phosphorus_ore",
+	wherein = "default:stone",
+	clust_scarcity = 400,
+	clust_num_ores = 4,
+	clust_size = 2,
+	height_min = -31000,
+	height_max = -100
 })
 
 for i, v in pairs({"red", "white", "blue", "green"}) do
@@ -146,7 +210,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "adv_vehicles:wheel",
+	output = "adv_vehicles:tire",
 	recipe = {
                   {plastic_itemstring, plastic_itemstring, "dye:dark_grey"},
                   {"default:steel_ingot", plastic_itemstring, ""},
@@ -154,6 +218,27 @@ minetest.register_craft({
                  }
 })
 
+minetest.register_craft({
+	output = "adv_vehicles:tires_bunch",
+	recipe = {
+		{"adv_vehicles:tire", "adv_vehicles:tire", "adv_vehicles:tire"},
+		{"adv_vehicles:tire", "", ""},
+		{"", "", ""}
+	}
+})
+
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:aluminium_and_silicon_dusts",
+	recipe = {"adv_vehicles:aluminium_dust", "adv_vehicles:silicon_dust"}
+})
+
+minetest.register_craft({
+	type="cooking",
+	output = "adv_vehicles:silumin_ingot",
+	recipe = "adv_vehicles:aluminium_and_silicon_dusts",
+	cooktime = 13
+})
 minetest.register_craft({
 	type="shapeless",
 	output = "adv_vehicles:aluminium_dust",
@@ -164,6 +249,24 @@ minetest.register_craft({
 	type="shapeless",
 	output = "adv_vehicles:silicon_dust",
 	recipe = {"adv_vehicles:silicon_lump"}
+})
+
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:phosphorus_dust",
+	recipe = {"adv_vehicles:phosphorus_lump"}
+})
+
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:two_red_headlights",
+	recipe = {"adv_vehicles:headlight_red", "adv_vehicles:headlight_red"}
+})
+
+minetest.register_craft({
+	type="shapeless",
+	output = "adv_vehicles:two_white_headlights",
+	recipe = {"adv_vehicles:headlight_white", "adv_vehicles:headlight_white"}
 })
 
 minetest.register_craft({
@@ -179,6 +282,15 @@ minetest.register_craft({
 	output = "adv_vehicles:blue_led",
 	recipe = {
 		{"adv_vehicles:silicon_dust", plastic_itemstring, "default:copper_ingot"},
+		{"", "", ""},
+		{"", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:green_led",
+	recipe = {
+		{"adv_vehicles:phosphorus_dust", plastic_itemstring, "default:copper_ingot"},
 		{"", "", ""},
 		{"", "", ""}
 	}
@@ -207,6 +319,43 @@ minetest.register_craft({
 		{"adv_vehicles:white_led", "default:steel_ingot", "adv_vehicles:white_led"}
 	}
 })
+
+minetest.register_craft({
+	output = "adv_vehicles:piston",
+	recipe = {
+                  {"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
+                  {"adv_vehicles:silumin_ingot", "adv_vehicles:silumin_ingot", ""},
+                  {"adv_vehicles:silumin_ingot", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:crankshaft",
+	recipe = {
+		{"default:steel_ingot", "default:steel_ingot", ""},
+		{"adv_vehicles:silumin_ingot", "", ""},
+		{"adv_vehicles:silumin_ingot", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:cylinder",
+	recipe = {
+		{"adv_vehicles:piston", "", ""},
+		{"adv_vehicles:crankshaft", "", ""},
+		{"adv_vehicles:silumin_ingot", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:diesel_ice",
+	recipe = {
+		{"adv_vehicles:cylinder", "default:steel_ingot", "default:steel_ingot"},
+		{"adv_vehicles:cylinder", "adv_vehicles:cylinder", ""},
+		{"adv_vehicles:cylinder", "adv_vehicles:aluminium_dust", ""}
+	}
+})
+
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
@@ -222,9 +371,9 @@ adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	description = "BMW 118 two-seater",
 	inv_image = "bmw_118_two_seats_inv.png",
 	craft_recipe = {
-                        {"adv_vehicles:car_frame", "dye:blue", ""},
-                        {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
-                        {"adv_vehicles:wheel", plastic_itemstring, ""}
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:tires_bunch", "adv_vehicles:two_red_headlights"},
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:diesel_ice", "adv_vehicles:two_white_headlights"},
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:steering_wheel", "dye:blue"}
 	}})
 	
 --[[minetest.register_craftitem("adv_vehicles:bmw_two_seats_inv", {
@@ -263,9 +412,9 @@ adv_vehicles.register_vehicle("volvo", {
 	description = "Volvo Bus",
 	inv_image = "volvo_inv.png",
 	craft_recipe = {
-                        {"adv_vehicles:car_frame", "dye:yellow", "dye:yellow"},
-                        {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
-                        {"adv_vehicles:wheel", plastic_itemstring, "default:steel_ingot"}
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:tires_bunch", "adv_vehicles:two_red_headlights"},
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:diesel_ice", "adv_vehicles:two_white_headlights"},
+                        {"adv_vehicles:car_frame_material", "adv_vehicles:steering_wheel", "dye:yellow"}
 	}})
 
 
@@ -285,9 +434,9 @@ adv_vehicles.register_vehicle("kamaz", {
 		description = "Kamaz Truck",
 		inv_image = "kamaz_inv.png",
                 craft_recipe = {
-                            {"adv_vehicles:car_frame", "dye:grey", "dye:white"},
-                            {"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
-                            {"adv_vehicles:wheel", plastic_itemstring, "default:steel_ingot"}
+                                {"adv_vehicles:car_frame_material", "adv_vehicles:tires_bunch", "adv_vehicles:two_red_headlights"},
+                                {"adv_vehicles:car_frame_material", "adv_vehicles:diesel_ice", "adv_vehicles:two_white_headlights"},
+                                {"adv_vehicles:car_frame_material", "adv_vehicles:steering_wheel", "dye:white"}
                            }
 	})
 
