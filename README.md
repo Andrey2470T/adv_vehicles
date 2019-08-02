@@ -235,6 +235,7 @@ adv_vehicles:red_led === adv_vehicles:blue_led === adv_vehicles:green_led
 Here are listed crafting recipes of ICE components.
 
 ***Piston***
+
 A piston that implements fuel compression.
 
 -------------------
@@ -258,6 +259,7 @@ adv_vehicles:silumin_ingot
 -------------------
 
 ***Cylinder***
+
 A working chamber of the ICE.
 
 -------------------
@@ -274,6 +276,7 @@ adv_vehicles:silumin_ingot
 A list of crafting recipes of vehicles.
 
 ***BMW 118 Car***
+
 Before 1.0.0-RC2.
 
 -------------------
@@ -286,6 +289,7 @@ adv_vehicles:wheel L/B plastic_sheet
 -------------------
 
 ***Volvo Bus***
+
 Before 1.0.0-RC2.
 
 -------------------
@@ -298,6 +302,7 @@ adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
 -------------------
 
 ***Kamaz Truck***
+
 Before 1.0.0-RC2.
 
 -------------------
@@ -310,6 +315,7 @@ adv_vehicles:wheel L/B plastic_sheet default:steel_ingot
 -------------------
 
 ***BMW 118 Car***
+
 Since 1.0.0-RC2.
 
 -------------------
@@ -322,6 +328,7 @@ adv_vehicles:car_frame_material === adv_vehicles:steering_wheel === dye:blue
 -------------------
 
 ***Volvo Bus***
+
 Since 1.0.0-RC2.
 
 -------------------
@@ -334,6 +341,7 @@ adv_vehicles:car_frame_material === adv_vehicles:steering_wheel === dye:yellow
 -------------------
 
 ***Kamaz Truck***
+
 Since 1.0.0-RC2.
 
 -------------------
@@ -349,6 +357,7 @@ adv_vehicles:car_frame_material === adv_vehicles:steering_wheel === dye:white
 ### Miscellaneous Stuff
 
 ***Tire***
+
 An element that intended for crafting of *tires bunch*
 
 -------------------
@@ -359,6 +368,7 @@ default:steel_ingot === L/B plastic_sheet
 -------------------
 
 ***Wheel***
+
 An element of crafting of all vehicles. Available only **before** 1.0.0-RC2.
 
 -------------------
@@ -369,6 +379,7 @@ default:steel_ingot === L/B plastic_sheet
 -------------------
 
 ***Red Headlight***
+
 Back car headlight. Crafted from seven *red_leds*, one *plastic_sheet* and one *steel ingot*.
 
 -------------------
@@ -379,6 +390,7 @@ adv_vehicles:red_led === default:steel_ingot === adv_vehicles:red_led
 -------------------
 
 ***White Headlight***
+
 Front car headlight. Crafted from four *white leds*, one *plastic_sheet* and one *steel ingot*.
 
 -------------------
