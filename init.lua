@@ -303,6 +303,15 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+	output = "adv_vehicles:steering_wheel",
+	recipe = {
+		{plastic_itemstring, plastic_itemstring, "adv_vehicles:aluminium_dust"},
+		{"dye:black", "", ""},
+		{"", "", ""}
+	}
+})
+
+minetest.register_craft({
 	output = "adv_vehicles:headlight_red",
 	recipe = {
 		{"adv_vehicles:red_led", "adv_vehicles:red_led", "adv_vehicles:red_led"},
