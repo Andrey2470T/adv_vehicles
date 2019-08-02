@@ -142,48 +142,60 @@ dye:black
 Heres about the ores generation and all recipes what concerned to using these ores.
 
 ***Aluminium***
+
 *Generates below -40 y coord.*
 *Introduces itself a long sheet of ores.*
 *Gives 1-6 *aluminium lumps*.
 *Generates rarer than *silicon*.
 
 ***Silicon***
+
 *Generates below -60 y coord.*
 *Shapes small clusts of ores.*
 *Gives 1-4 *silicon lumps*.
 *Most frequently generated*.
 
 ***Phosphorus***
+
 *Generates below -100 y coord.*
 *Introduces blobs of ores.*
 *Gives 1-3 *phosphorus lumps*.
 *Very rare*
 
 ***Aluminium Lump***
+
 Mined *aluminium ore*.
 
 ***Aluminium Dust***
+
 Crafted from one *aluminium lump*.
 
 ***Silicon Lump***
+
 Mined from *silicon ore*.
 
 ***Silicon Dust***
+
 Crafted from *silicon lump*.
 
 ***Phosphorus Lump***
+
 Mined from *aluminium ore*.
 
 ***Phosphorus Dust***
+
 Mined from *phosphorus lump*.
 
 ***Aluminium and Silicon Dusts***
+
 A group of *aluminium dust* and *silicon dust*. Needed for alloying of *silumin*.
 
 ***Silumin Ingot***
+
 An alloy is consisted of *aluminium* and *silicon* dusts. Needed for crafting of *piston*, *crankshaft* and *cylinder*.
 
 ***Red LED***
+
 A light-emitting diode of red color.
 
 -------------------
@@ -192,6 +204,7 @@ adv_vehicles:aluminium_dust === L/B plastic_sheet === default:copper_ingot
 -------------------
 
 ***Green LED***
+
 A light-emitting diode of green color.
 
 -------------------
@@ -200,6 +213,7 @@ adv_vehicles:phosphorus_dust === L/B plastic_sheet === default:copper_ingot
 -------------------
 
 ***Blue LED***
+
 A light-emitting diode of blue color.
 
 -------------------
@@ -208,6 +222,7 @@ adv_vehicles:silicon_dust === L/B plastic_sheet === default:copper_ingot
 -------------------
 
 ***White LED***
+
 A light-emitting diode of white color. 
 
 -------------------
