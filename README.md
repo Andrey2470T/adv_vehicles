@@ -96,6 +96,7 @@ adv_vehicles:tire
 -------------------
 
 ***Two Red Headlights***
+
 A group of *red headlights*. Just made to save a room in the crafting grid for other items.
 
 -------------------
@@ -104,6 +105,7 @@ adv_vehicles:headlight_red === adv_vehicles:headlight_red
 -------------------
 
 ***Two White Headlights***
+
 A group of *white headlights*. Just made to save a room in the crafting grid for other items.
 
 -------------------
@@ -112,6 +114,7 @@ adv_vehicles:headlight_white === adv_vehicles:headlight_white
 -------------------
 
 ***Diesel ICE (Internal Combustion Engine)***
+
 An important part of any vehicle without that no one can move in real. Crafted from *aluminium dust*, four *cylinders* and two *steel ingots*.
 
 -------------------
@@ -124,6 +127,7 @@ adv_vehicles:cylinder === adv_vehicles:aluminium_dust
 -------------------
 
 ***Steering Wheel***
+
 Needed for crafting of any vehicle.
 
 -------------------
