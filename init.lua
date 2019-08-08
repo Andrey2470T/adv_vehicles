@@ -368,11 +368,24 @@ minetest.register_craft({
 adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	hp_max = 60,
 	mass = 1.3,
-	acc_vector_length = 10.0,
+	acc_vector_length = 15.0,
 	max_vel = 10,
 	cbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
 	model = "bmw_118_two_seats_redone.b3d",
 	textures = {"bmw_118_two_seats_new_tex.png"},
+	smoke_emit = {
+		amount = 6,
+		min_pos = {x=-0.6, y=-0.2, z=-3.2},
+		max_pos = {x=-0.5, y=-0.2, z=-3.2},
+		min_vel = {x=0, y=0, z=-1.0},
+		max_vel = {x=0, y=0, z=-1.3},
+		min_acc = {x=0, y=0, z=0.25},
+		max_acc = {x=0, y=0, z=0.35},
+		min_exp_time = 0.8,
+		max_exp_time = 2.0,
+		min_size = 2,
+		max_size = 4
+	},
 	seats = {["driver"]={busy_by=nil, pos={x=4.0, z=-3.5}, eye_offset={x=-3.0, z=5.0}}, 
                  ["passenger"]={busy_by=nil, pos={x=-8.0, z=-3.5}, eye_offset={x=3.0, z=5.0}}}
                                                    }, {
@@ -402,7 +415,7 @@ end
 adv_vehicles.register_vehicle("volvo", {
 	hp_max = 130,
 	mass = 25,
-	acc_vector_length = 6.5,
+	acc_vector_length = 9.5,
 	max_vel = 3,
 	cbox = {-1.2, -0.5, -4.5, 1.2, 2.0, 4.5},
 	model = "volvo.b3d",
@@ -430,12 +443,12 @@ adv_vehicles.register_vehicle("volvo", {
 adv_vehicles.register_vehicle("kamaz", {
 	hp_max = 160,
 	mass = 40,
-	acc_vector_length = 6.0,
+	acc_vector_length = 7.5,
 	max_vel = 1.5,
 	cbox = {-1.5, -0.5, -3.5, 1.5, 2.5, 3.5},
 	model = "kamaz.b3d",
 	textures = {"kamaz.png"},
-	seats = {["driver"]={busy_by=nil, pos={x=0, z=-18.0}}, 
+	seats = {["driver"]={busy_by=nil, pos={x=0, z=-18.0}, eye_offset={x=0, z=28}}, 
 	},
 	player_eye_offset = {x=0, y=0, z=-18.0}
 	}, {
