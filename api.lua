@@ -317,24 +317,10 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				
 				-- Further it will get new position for the acceleration vector dependently on fixed rotation angle and fix new rotation angles.
 				entity.acc_vector_pos, entity.fixed_veh_rotate_angle = adv_vehicles.pave_vector(entity, entity.acc_vector_pos, entity.fixed_veh_rotate_angle)
-				--[[if self.smoke_emit then
-					local s_e = entity.smoke_emit
-					s_e.min_pos = adv_vehicles.rotate_point_around_other_point({x=0, y=s_e.min_pos.y, z=0}, s_e.min_pos, entity.fixed_veh_rotate_angle,)]]
 				if entity.seats_list["driver"].busy_by then
 					local player = minetest.get_player_by_name(entity.seats_list["driver"].busy_by)
 					yaw = entity.on_handle(entity, player:get_player_control(), yaw)
 				end
-	                                            
-				--[[for seat, d in pairs(entity.seats_list) do
-					if d.busy_by then
-						local player = minetest.get_player_by_name(d.busy_by)
-						local is_sit = minetest.deserialize(player:get_meta():get_string("is_sit"))
-						if is_sit[2] == "driver" then
-	                                            yaw = entity.on_handle(entity, player:get_player_control(), yaw)
-						end
-					end
-				end]]
-				--entity.fixed_veh_rotate_angle = obj:get_yaw()
 				
 				-- If a length of the velocity vector exceeds a 'max_vel' value, sets to zero the acceleration vector.
 				local vel_length = vector.length(vel)
