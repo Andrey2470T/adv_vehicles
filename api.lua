@@ -50,7 +50,7 @@ adv_vehicles.attach_player_to_veh = function(player, vehicle, seated, model, ani
     meta:set_string("is_sit", minetest.serialize({veh_name, seated}))
     local new_player_rot = {x=math.deg(veh_rot.x), y=veh_rot.y+180, z=math.deg(veh_rot.z)}
     local p=vehicle.object:get_pos()
-    --player:set_pos({x=p.x+vehicle.seats_list[seated].pos.x, y=p.y, z=p.z+vehicle.seats_list[seated].pos.z})
+    --player:set_pos({x=p.x+new_seat_pos.x, y=p.y, z=p.z+new_seat_pos.z})
     local eye_offset_fi, eye_offset_th = player:get_eye_offset()
     if vehicle.seats_list[seated].eye_offset then
 	    local eye_off = vehicle.seats_list[seated].eye_offset
@@ -186,6 +186,8 @@ adv_vehicles.vehicle_braking = function (vehicle, vector_l)
 	local acc_x = -(vel.x*vector_l/vel_l)
 	local acc_z = -(vel.z*vector_l/vel_l)
 	local acc_y = obj:get_acceleration().y
+	--minetest.debug(dump(obj:get_acceleration()))
+	--minetest.debug(dump({x=acc_x, y=acc_y, z=acc_z}))
 	obj:set_acceleration({x=acc_x, y=acc_y, z=acc_z})
 	
 	local new_acc = obj:get_acceleration()
@@ -220,7 +222,23 @@ adv_vehicles.vehicle_handle = function (vehicle, controls, yaw)
 	end
 	
 	local acc = vehicle.object:get_acceleration()
-	if controls.up then
+	local up_and_down_vals = {controls.up, controls.down}
+	local t = {1, -1}
+	local s
+	for i, v in pairs(up_and_down_vals) do
+		if v then
+			s = t[i]
+		end
+	end
+	
+	if (controls.up and s) or (controls.down and s) then
+		is_car_driven=true
+		vehicle.object:set_acceleration({x=vehicle.acc_vector_pos.x*s, y=acc.y, z=vehicle.acc_vector_pos.z*s})
+	else
+		is_car_driven=nil
+	end
+		
+	--[[if controls.up then
 		is_car_driven=true
 		vehicle.object:set_acceleration({x=vehicle.acc_vector_pos.x, y=acc.y, z=vehicle.acc_vector_pos.z})
 	else
@@ -232,7 +250,7 @@ adv_vehicles.vehicle_handle = function (vehicle, controls, yaw)
 		vehicle.object:set_acceleration({x=vehicle.acc_vector_pos.x*-1, y=acc.y, z=vehicle.acc_vector_pos.z*-1})
 	else
 		is_car_driven=nil
-	end	
+	end	]]
 	return math.rad(new_yaw)
 end
 	                            
@@ -247,7 +265,6 @@ end
 		local nearby_nodes = minetest.find_node_near(pos, z_face, global_nodenames_list)]]
 
 -- Registers a vehicle to the world and creates a spawner item for it with a crafting recipe.
-local is_origin_yaw_set
 adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 	minetest.register_entity("adv_vehicles:"..vehname, {
 		visual = "mesh",
@@ -274,7 +291,8 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				self.seats_list[seated].pos.y = 0
 			end
 			self.veh_vel = 0
-	                                               
+			self.smoke_emit = veh_properties.smoke_emit
+			minetest.debug(dump(self.smoke_emit))
 			local acc = self.object:get_acceleration()
 			local gravity_strength = veh_properties.mass * -9.8
 			self.object:set_acceleration({x=acc.x, y=gravity_strength, z=acc.z})
@@ -299,16 +317,10 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				
 				-- Further it will get new position for the acceleration vector dependently on fixed rotation angle and fix new rotation angles.
 				entity.acc_vector_pos, entity.fixed_veh_rotate_angle = adv_vehicles.pave_vector(entity, entity.acc_vector_pos, entity.fixed_veh_rotate_angle)
-				for seat, d in pairs(entity.seats_list) do
-					if d.busy_by then
-						local player = minetest.get_player_by_name(d.busy_by)
-						local is_sit = minetest.deserialize(player:get_meta():get_string("is_sit"))
-						if is_sit[2] == "driver" then
-	                                            yaw = entity.on_handle(entity, player:get_player_control(), yaw)
-						end
-					end
+				if entity.seats_list["driver"].busy_by then
+					local player = minetest.get_player_by_name(entity.seats_list["driver"].busy_by)
+					yaw = entity.on_handle(entity, player:get_player_control(), yaw)
 				end
-				--entity.fixed_veh_rotate_angle = obj:get_yaw()
 				
 				-- If a length of the velocity vector exceeds a 'max_vel' value, sets to zero the acceleration vector.
 				local vel_length = vector.length(vel)
@@ -353,12 +365,40 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 					if seated == "driver" then 
 						adv_vehicles.attach_player_to_veh(clicker, self, seated, "driver.b3d")
 						self.is_veh_stopping=nil
+						--minetest.debug(dump(self.smoke_emit))
+						if self.smoke_emit then
+	                                                    minetest.debug("TRUE")
+	                                                    local sm_emit = self.smoke_emit
+	                                                    self.smoke_spawner_id = minetest.add_particlespawner({
+									amount = sm_emit.amount,
+									time = 0,
+									minpos = sm_emit.min_pos,
+									maxpos = sm_emit.max_pos,
+									minvel = sm_emit.min_vel,
+									maxvel = sm_emit.max_vel,
+									minacc = sm_emit.min_acc,
+									maxacc = sm_emit.max_acc,
+									minexptime = sm_emit.min_exp_time,
+									maxexptime = sm_emit.max_exp_time,
+									minsize = sm_emit.min_size,
+									maxsize = sm_emit.max_size,
+									collisiondetection = true,
+									collision_removal = true,
+									object_collision = true,
+									attached = self.object,
+									texture = sm_emit.texture or "default_item_smoke.png"
+							})     
+						end
 					else adv_vehicles.attach_player_to_veh(clicker, self, seated, nil, {x=81, y=81}) end
 					break
 				elseif data.busy_by == clicker:get_player_name() then
 					if seated == "driver" then 
 						adv_vehicles.detach_player_from_veh(clicker, self, seated, "character.b3d")
 						self.is_veh_stopping=true
+						if self.smoke_spawner_id then
+							minetest.delete_particlespawner(self.smoke_spawner_id)
+							self.smoke_spawner_id=nil
+						end
 					else adv_vehicles.detach_player_from_veh(clicker, self, seated, nil, {x=1, y=80}) end
 					break
 				end
@@ -375,7 +415,6 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 					local object = minetest.add_entity(pointed_thing.above, "adv_vehicles:"..vehname)
 					local yaw = math.deg(placer:get_look_horizontal())
 					object:set_yaw(math.rad(yaw+180))
-					--is_origin_yaw_set=true
 				end
 			end
 		})
