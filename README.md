@@ -41,15 +41,24 @@ Adds smart different cars (passenger cars, trucks, buses, service). This mod int
 ###adv_vehicles.detach_player_from_veh(player, vehicle, seated, model, animation)
 --Opposite to *adv_vehicles.attach_player_to_car*. Detaches a player from the car and the same arguments.
 
-###adv_vehicles.pave_vector(vehicle, vect_length, old_yaw)
---Paves the vector from '0' point relatively to the car origin towards to *vect_length*.
+###adv_vehicles.pave_vector(vehicle, old_acc_vect_pos, old_yaw)
+--Paves the vector from '0' point relatively to the car origin towards to *old_acc_vect_pos*.
 *old_yaw* is a integer value that saving in self.fixed_veh_rotate_angle.
 This method should be caused continuously per 0.1 second to recalculate the car direction.
 
 ###adv_vehicles.rotate_collisionbox(vehicle, yaw)
 This method is WIP and doesnt work properly currently.
 
-*This documentation is in working progress.*
+###adv_vehicles.collide(vehicle)
+Calculates elastic force of surface on that *vehicle* has fallen. It depends currently only on the vehicle velocity. It will also damage the vehicle and objects sitting inside. Damage rate also depends from the velocity.
+
+###adv_vehicles.vehicle_braking(vehicle, vector_l)
+*vector_l* is a just coefficient for braking calculating. The above value, the braking is faster. This method is permanently called in the globalstep.
+
+###adv_vehicles.vehicle_handle(vehicle, controls, yaw)
+*controls* is a table resulted from get_player_control().
+
+Executes the vehicle driving (turns, forward/backward going)
 
 ## Crafting Recipes Guide
 -----------------------------
