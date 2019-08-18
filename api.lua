@@ -155,14 +155,14 @@ local is_fallen
 -- Bounces a car only due to the falling.
 adv_vehicles.collide = function (vehicle)
 	local vel = vehicle.object:get_velocity()
-	local fixed_vel = vehicle.veh_vel
+	local fixed_vel = vehicle.y_vel
 	local seats_list = vehicle.seats_list
 	local hp = vehicle.object:get_hp()
 	if vel.y == 0 and fixed_vel ~= 0 then
 		if not is_fallen then
 		is_fallen = true
 		local acc = vehicle.object:get_acceleration()
-		vehicle.object:set_acceleration({x=acc.x, y=fixed_vel*-5, z=acc.z})
+		vehicle.object:set_acceleration({x=acc.x, y=math.abs(fixed_vel)*10, z=acc.z})
 		vehicle.object:set_hp(hp-math.abs(math.ceil(fixed_vel)), {type="fall"})
 		for seated, data in pairs(seats_list) do
 			if seated.busy_by then
@@ -186,8 +186,6 @@ adv_vehicles.vehicle_braking = function (vehicle, vector_l)
 	local acc_x = -(vel.x*vector_l/vel_l)
 	local acc_z = -(vel.z*vector_l/vel_l)
 	local acc_y = obj:get_acceleration().y
-	--minetest.debug(dump(obj:get_acceleration()))
-	--minetest.debug(dump({x=acc_x, y=acc_y, z=acc_z}))
 	obj:set_acceleration({x=acc_x, y=acc_y, z=acc_z})
 	
 	local new_acc = obj:get_acceleration()
@@ -274,6 +272,8 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 		max_vel = veh_properties.max_vel or 120,
 		collide_with_objects = true,
 		collisionbox = veh_properties.cbox,
+		selectionbox = veh_properties.sbox or veh_properties.cbox,
+		pointable=true,
 		mesh = veh_properties.model,
 		textures = veh_properties.textures,
 		visual_size = veh_properties.visual_size or {x=1, y=1, z=1},
@@ -290,9 +290,7 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				self.seats_list[seated] = data
 				self.seats_list[seated].pos.y = 0
 			end
-			self.veh_vel = 0
-			self.smoke_emit = veh_properties.smoke_emit
-			minetest.debug(dump(self.smoke_emit))
+			self.y_vel = 0
 			local acc = self.object:get_acceleration()
 			local gravity_strength = veh_properties.mass * -9.8
 			self.object:set_acceleration({x=acc.x, y=gravity_strength, z=acc.z})
@@ -307,7 +305,7 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 				local obj = entity.object
 				local vel = obj:get_velocity()
 				if vel.y ~= 0 then
-				    entity.veh_vel = vel.y
+				    entity.y_vel = vel.y
 				end
 				local acc = obj:get_acceleration()
 				if acc.y > 0 then
@@ -365,40 +363,12 @@ adv_vehicles.register_vehicle = function (vehname, veh_properties, veh_item)
 					if seated == "driver" then 
 						adv_vehicles.attach_player_to_veh(clicker, self, seated, "driver.b3d")
 						self.is_veh_stopping=nil
-						--minetest.debug(dump(self.smoke_emit))
-						if self.smoke_emit then
-	                                                    minetest.debug("TRUE")
-	                                                    local sm_emit = self.smoke_emit
-	                                                    self.smoke_spawner_id = minetest.add_particlespawner({
-									amount = sm_emit.amount,
-									time = 0,
-									minpos = sm_emit.min_pos,
-									maxpos = sm_emit.max_pos,
-									minvel = sm_emit.min_vel,
-									maxvel = sm_emit.max_vel,
-									minacc = sm_emit.min_acc,
-									maxacc = sm_emit.max_acc,
-									minexptime = sm_emit.min_exp_time,
-									maxexptime = sm_emit.max_exp_time,
-									minsize = sm_emit.min_size,
-									maxsize = sm_emit.max_size,
-									collisiondetection = true,
-									collision_removal = true,
-									object_collision = true,
-									attached = self.object,
-									texture = sm_emit.texture or "default_item_smoke.png"
-							})     
-						end
 					else adv_vehicles.attach_player_to_veh(clicker, self, seated, nil, {x=81, y=81}) end
 					break
 				elseif data.busy_by == clicker:get_player_name() then
 					if seated == "driver" then 
 						adv_vehicles.detach_player_from_veh(clicker, self, seated, "character.b3d")
 						self.is_veh_stopping=true
-						if self.smoke_spawner_id then
-							minetest.delete_particlespawner(self.smoke_spawner_id)
-							self.smoke_spawner_id=nil
-						end
 					else adv_vehicles.detach_player_from_veh(clicker, self, seated, nil, {x=1, y=80}) end
 					break
 				end

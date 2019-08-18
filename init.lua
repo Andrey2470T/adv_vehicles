@@ -19,9 +19,14 @@ minetest.register_craftitem("adv_vehicles:tire", {
 	inventory_image = "tire.png"
 })
 
-minetest.register_craftitem("adv_vehicles:tires_bunch", {
-	description = "Bunch of tires",
-	inventory_image = "tires_bunch.png"
+minetest.register_craftitem("adv_vehicles:wheel", {
+	description = "Wheel",
+	inventory_image = "wheel.png"
+})
+
+minetest.register_craftitem("adv_vehicles:wheels_bunch", {
+	description = "Bunch of wheels",
+	inventory_image = "wheels_bunch.png"
 })
 
 minetest.register_craftitem("adv_vehicles:steering_wheel", {
@@ -213,16 +218,25 @@ minetest.register_craft({
 	output = "adv_vehicles:tire",
 	recipe = {
                   {plastic_itemstring, plastic_itemstring, "dye:dark_grey"},
-                  {"default:steel_ingot", plastic_itemstring, ""},
+                  {plastic_itemstring, "", ""},
                   {"", "", ""}
                  }
 })
 
 minetest.register_craft({
-	output = "adv_vehicles:tires_bunch",
+	output = "adv_vehicles:wheel",
 	recipe = {
-		{"adv_vehicles:tire", "adv_vehicles:tire", "adv_vehicles:tire"},
-		{"adv_vehicles:tire", "", ""},
+                  {"adv_vehicles:car_frame_material", "default:steel_ingot", ""},
+                  {"adv_vehicles:aluminium_dust", "adv_vehicles:tire", ""},
+                  {"", "", ""}
+                 }
+})
+
+minetest.register_craft({
+	output = "adv_vehicles:wheels_bunch",
+	recipe = {
+		{"adv_vehicles:wheel", "adv_vehicles:wheel", "adv_vehicles:wheel"},
+		{"adv_vehicles:wheel", "", ""},
 		{"", "", ""}
 	}
 })
@@ -371,21 +385,9 @@ adv_vehicles.register_vehicle("bmw_118_two_seats", {
 	acc_vector_length = 15.0,
 	max_vel = 35.0,
 	cbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
+	sbox = {-1.2, -0.5, -3.0, 1.2, 1.5, 3.0},
 	model = "bmw_118_two_seats_redone.b3d",
 	textures = {"bmw_118_two_seats_new_tex.png"},
-	smoke_emit = {
-		amount = 6,
-		min_pos = {x=-0.6, y=-0.2, z=-3.2},
-		max_pos = {x=-0.5, y=-0.2, z=-3.2},
-		min_vel = {x=0, y=0, z=-1.0},
-		max_vel = {x=0, y=0, z=-1.3},
-		min_acc = {x=0, y=0, z=0.25},
-		max_acc = {x=0, y=0, z=0.35},
-		min_exp_time = 0.8,
-		max_exp_time = 2.0,
-		min_size = 2,
-		max_size = 4
-	},
 	seats = {["driver"]={busy_by=nil, pos={x=4.0, z=-3.5}, eye_offset={x=-3.0, z=5.0}}, 
                  ["passenger"]={busy_by=nil, pos={x=-8.0, z=-3.5}, eye_offset={x=3.0, z=5.0}}}
                                                    }, {
@@ -418,6 +420,7 @@ adv_vehicles.register_vehicle("volvo", {
 	acc_vector_length = 12.0,
 	max_vel = 20.0,
 	cbox = {-1.2, -0.5, -4.5, 1.2, 2.0, 4.5},
+	sbox = {-1.2, -0.5, -4.5, 1.2, 2.0, 4.5},
 	model = "volvo.b3d",
 	textures = {"volvo.png"},
 	seats = {["driver"]={busy_by=nil, pos={x=-4.5, z=-26.0}, eye_offset={x=4.0, z=31.0}}, 
@@ -446,6 +449,7 @@ adv_vehicles.register_vehicle("kamaz", {
 	acc_vector_length = 10.5,
 	max_vel = 16.0,
 	cbox = {-1.5, -0.5, -3.5, 1.5, 2.5, 3.5},
+	sbox = {-1.5, -0.5, -3.5, 1.5, 2.5, 3.5},
 	model = "kamaz.b3d",
 	textures = {"kamaz.png"},
 	seats = {["driver"]={busy_by=nil, pos={x=0, z=-18.0}, eye_offset={x=0, z=28}}, 
