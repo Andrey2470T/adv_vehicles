@@ -24,6 +24,11 @@ local function round_num(num)
 	return rounded_num
 end
 
+--[[adv_vehicles.get_obj_and_seat_pos = function(name)
+	minetest.debug(dump(vehs[name]))
+        return vehs[name]
+end]]
+
 local is_car_driven = nil
 -- The method calculates new position for any car seat (for example, after a car turning)
 adv_vehicles.rotate_point_around_other_point = function (circle_centre_pos, rotating_point_pos, fixed_point_yaw, current_point_yaw)
@@ -34,16 +39,20 @@ adv_vehicles.rotate_point_around_other_point = function (circle_centre_pos, rota
 	return new_pos
 end
 
+vehs = {}
 -- The method attaches a player to the car
 adv_vehicles.attach_player_to_veh = function(player, vehicle, seated, model, animation)
     if vehicle.seats_list[seated].busy_by then
 	    minetest.chat_send_player(player:get_player_name(), "This seat is busy by" .. vehicle.seats_list[seated].busy_by .. "!")
 	    return 
     end
-    
+    local name = player:get_player_name()
+    vehs[name] = {}
+    --vehs[name].obj = vehicle
     vehicle.seats_list[seated].busy_by = player:get_player_name()
     local veh_rot = vehicle.object:get_rotation()
     local new_seat_pos = adv_vehicles.rotate_point_around_other_point({x=0, y=0, z=0}, vehicle.seats_list[seated].pos, vehicle.fixed_veh_rotate_angle, veh_rot.y)
+    vehs[name].r_seat_pos = new_seat_pos
     new_seat_pos.y = 9
     vehicle.seats_list[seated].pos = new_seat_pos
     local meta = player:get_meta()
@@ -80,6 +89,8 @@ adv_vehicles.detach_player_from_veh = function (player, vehicle, seated, model, 
 	if not vehicle.seats_list[seated].busy_by then
 		return
 	end
+	local name = player:get_player_name()
+	vehs[name] = nil
 	local meta = player:get_meta()
 	meta:set_string("is_sit", "")
 	vehicle.seats_list[seated].busy_by = nil
@@ -195,31 +206,53 @@ adv_vehicles.vehicle_braking = function (vehicle, vector_l)
 		obj:set_acceleration({x=0, y=new_acc.y, z=0})
 	end
 end
-	
+
+local R_ANGLE_TURN_ACC = 1 -- Acceleration value of turn (to right)
+local L_ANGLE_TURN_ACC = 1 -- Acceleration value of turn (to left)
 -- Implements vehicle controls (turning, moving forward/backwards).
 adv_vehicles.vehicle_handle = function (vehicle, controls, yaw)
 	local vel_l = vector.length(vehicle.object:get_velocity())
 	local new_yaw=math.deg(yaw)
+	local acc = vehicle.object:get_acceleration()
 	if controls.right and vel_l ~= 0 then
-		vehicle.object:set_yaw(yaw-math.rad(1))
+		vehicle.object:set_yaw(yaw-math.rad(R_ANGLE_TURN_ACC))
+		if R_ANGLE_TURN_ACC < 25 then
+		     R_ANGLE_TURN_ACC = R_ANGLE_TURN_ACC+vel_l-acc.y
+		end
 		new_yaw = math.deg(vehicle.object:get_yaw())
 		local fixed_cbox_yaw = vehicle.collisionbox_yaw.val
 		if new_yaw-fixed_cbox_yaw <= -90 then
 			--minetest.debug("1")
 		      adv_vehicles.rotate_collisionbox(vehicle, -90)
 		end
+	else
+		if R_ANGLE_TURN_ACC > 1 then -- If the vehicle was turned with an acceleration in last step, then decelerates the vehicle turn.
+			R_ANGLE_TURN_ACC = R_ANGLE_TURN_ACC - 1
+			vehicle.object:set_yaw(yaw+math.rad(R_ANGLE_TURN_ACC))
+		else
+			R_ANGLE_TURN_ACC = 1
+		end
 	end
 	if controls.left and vel_l ~= 0 then
-		vehicle.object:set_yaw(yaw+math.rad(1))
+		vehicle.object:set_yaw(yaw+math.rad(L_ANGLE_TURN_ACC))
+		if L_ANGLE_TURN_ACC < 25 then
+			L_ANGLE_TURN_ACC = L_ANGLE_TURN_ACC+vel_l-acc.y
+		end
 		new_yaw = math.deg(vehicle.object:get_yaw())
 		local fixed_cbox_yaw = vehicle.collisionbox_yaw.val
 		if new_yaw+fixed_cbox_yaw >= 90 then
 			--minetest.debug("2")
 		      adv_vehicles.rotate_collisionbox(vehicle, 90)
 		end
+	else
+		if L_ANGLE_TURN_ACC > 1 then
+			L_ANGLE_TURN_ACC = L_ANGLE_TURN_ACC - 1
+			vehicle.object:set_yaw(yaw-math.rad(L_ANGLE_TURN_ACC))
+		else
+			L_ANGLE_TURN_ACC = 1
+		end
 	end
 	
-	local acc = vehicle.object:get_acceleration()
 	local up_and_down_vals = {controls.up, controls.down}
 	local t = {1, -1}
 	local s
@@ -409,7 +442,27 @@ end
 		end
 	end
 end)]]
-	
+--[[minetest.register_on_leaveplayer(function(player)
+	if not vehs then
+		vehs = {}
+	end
+	local meta = minetest.deserialize(player:get_meta():get_string("is_sit"))
+	if meta then
+		local name = player:get_player_name()
+		local attached_to = 
+		vehs[name] = ]]
+--[[minetest.register_on_joinplayer(function(player)
+	--minetest.debug(dump(vehs))     
+	local meta = minetest.deserialize(player:get_meta():get_string("is_sit"))
+	if meta then
+		local yaw = player:get_yaw()
+		local name = player:get_player_name()
+		local data = adv_vehicles.get_obj_and_seat_pos(name)
+		--local new_obj = data.obj:get_luaentity()
+		--player:set_attach(new_obj, "", data.r_seat_pos, yaw)
+	end
+end)]]
+
 minetest.register_on_dieplayer(function (player)
 	local meta = player:get_meta()
 	if meta:get_string("is_sit") ~= (nil or "") then
