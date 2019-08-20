@@ -1,4 +1,4 @@
-# Advanced Vehicles 1.0.0-Release Candidate #2
+# Advanced Vehicles. Current version is 1.0.1-Release.
 
 ## Description
 ------------------------------
@@ -93,14 +93,14 @@ L/B plastic_sheet
 
 -------------------
 
-***Tires Bunch***
+***Wheels Bunch***
 
-A group of *tires* items. An element is needed for crafting of all vehicles. Just made to save a room in the crafting grid for other items.
+A group of *wheels* items. An element is needed for crafting of all vehicles. Just made to save a room in the crafting grid for other items.
 
 -------------------
-adv_vehicles:tire === adv_vehicles:tire === adv_vehicles:tire
+adv_vehicles:wheel === adv_vehicles:wheel === adv_vehicles:wheel
 
-adv_vehicles:tire
+adv_vehicles:wheel
 
 -------------------
 
@@ -372,18 +372,18 @@ An element that intended for crafting of *tires bunch*
 -------------------
 L/B plastic_sheet === L/B plastic_sheet === dye:dark_green
 
-default:steel_ingot === L/B plastic_sheet
+L/B plastic_sheet
 
 -------------------
 
 ***Wheel***
 
-An element of crafting of all vehicles. Available only **before** 1.0.0-RC2.
+An element for crafting of *wheels_bunch*.
 
 -------------------
-L/B plastic_sheet === L/B plastic_sheet === dye:dark_green
+adv_vehicles:car_frame_material === default:steel_ingot
 
-default:steel_ingot === L/B plastic_sheet
+adv_vehicles:aluminium_dust === adv_vehicles:tire
 
 -------------------
 
